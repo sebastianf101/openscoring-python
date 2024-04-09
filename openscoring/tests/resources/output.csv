@@ -1,0 +1,4 @@
+Id,Species,probability(setosa),probability(versicolor),probability(virginica)
+record-001,setosa,1.0,0.0,0.0
+record-002,versicolor,0.0,0.9074074074074074,0.09259259259259259
+record-003,virginica,0.0,0.021739130434782608,0.9782608695652174
