@@ -5,11 +5,11 @@ exec(open("openscoring/metadata.py").read())
 setup(
 	name = "openscoring",
 	version = __version__,
-	description = "Python client library for the Openscoring REST web service (https://github.com/openscoring/openscoring)",
+	description = "Python client library for the Openscoring REST web service (https://github.com/sebastianf101/openscoring-python)",
 	author = "Villu Ruusmann",
 	author_email = "villu.ruusmann@gmail.com",
-	url = "https://github.com/openscoring/openscoring-python",
-	download_url = "https://github.com/openscoring/openscoring-python/archive/" + __version__ + ".tar.gz",
+	url = "https://github.com/sebastianf101/openscoring-python",
+	download_url = "https://github.com/sebastianf101/openscoring-python/archive/" + __version__ + ".tar.gz",
 	license = __license__,
 	classifiers = [
 		"Development Status :: 5 - Production/Stable",

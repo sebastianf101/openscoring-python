@@ -1,0 +1,824 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.4">
+	<Header>
+		<Application name="SkLearn2PMML package" version="0.105.2"/>
+		<Timestamp>2024-04-10T23:30:31Z</Timestamp>
+	</Header>
+	<DataDictionary>
+		<DataField name="Status" optype="categorical" dataType="integer">
+			<Value value="0"/>
+			<Value value="1"/>
+		</DataField>
+		<DataField name="income" optype="continuous" dataType="double">
+			<Interval closure="closedClosed" leftMargin="0.0" rightMargin="578580.0"/>
+		</DataField>
+		<DataField name="Credit_Score" optype="continuous" dataType="double">
+			<Interval closure="closedClosed" leftMargin="500.0" rightMargin="900.0"/>
+		</DataField>
+		<DataField name="occupancy_type" optype="categorical" dataType="string">
+			<Value value="ir"/>
+			<Value value="pr"/>
+			<Value value="sr"/>
+		</DataField>
+	</DataDictionary>
+	<TransformationDictionary>
+		<DefineFunction name="add_eps" optype="continuous" dataType="double">
+			<ParameterField name="x"/>
+			<Apply function="+">
+				<FieldRef field="x"/>
+				<Apply function="+">
+					<Constant dataType="double">1.0E-8</Constant>
+					<Apply function="*">
+						<Constant dataType="double">1.0E-5</Constant>
+						<Apply function="abs">
+							<FieldRef field="x"/>
+						</Apply>
+					</Apply>
+				</Apply>
+			</Apply>
+		</DefineFunction>
+	</TransformationDictionary>
+	<RegressionModel functionName="classification" algorithmName="sklearn.linear_model._logistic.LogisticRegression" normalizationMethod="logit">
+		<MiningSchema>
+			<MiningField name="Status" usageType="target"/>
+			<MiningField name="occupancy_type" missingValueTreatment="asIs"/>
+			<MiningField name="income" missingValueReplacement="6947.543009423926" missingValueTreatment="asMean"/>
+			<MiningField name="Credit_Score" missingValueReplacement="699.7504061021259" missingValueTreatment="asMean"/>
+		</MiningSchema>
+		<Output>
+			<OutputField name="probability(0)" optype="continuous" dataType="double" feature="probability" value="0"/>
+			<OutputField name="probability(1)" optype="continuous" dataType="double" feature="probability" value="1"/>
+		</Output>
+		<LocalTransformations>
+			<DerivedField name="add_eps(income)" optype="continuous" dataType="double">
+				<Apply function="add_eps">
+					<FieldRef field="income"/>
+				</Apply>
+			</DerivedField>
+			<DerivedField name="discretize(add_eps(income))" optype="categorical" dataType="double">
+				<Discretize field="add_eps(income)" dataType="double">
+					<DiscretizeBin binValue="0">
+						<Interval closure="closedOpen" rightMargin="3420.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="1">
+						<Interval closure="closedOpen" leftMargin="3420.0" rightMargin="5100.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="2">
+						<Interval closure="closedOpen" leftMargin="5100.0" rightMargin="6947.543009423926"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="3">
+						<Interval closure="closedOpen" leftMargin="6947.543009423926" rightMargin="9060.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="4">
+						<Interval closure="closedOpen" leftMargin="9060.0"/>
+					</DiscretizeBin>
+				</Discretize>
+			</DerivedField>
+			<DerivedField name="add_eps(Credit_Score)" optype="continuous" dataType="double">
+				<Apply function="add_eps">
+					<FieldRef field="Credit_Score"/>
+				</Apply>
+			</DerivedField>
+			<DerivedField name="discretize(add_eps(Credit_Score))" optype="categorical" dataType="double">
+				<Discretize field="add_eps(Credit_Score)" dataType="double">
+					<DiscretizeBin binValue="0">
+						<Interval closure="closedOpen" rightMargin="579.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="1">
+						<Interval closure="closedOpen" leftMargin="579.0" rightMargin="659.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="2">
+						<Interval closure="closedOpen" leftMargin="659.0" rightMargin="740.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="3">
+						<Interval closure="closedOpen" leftMargin="740.0" rightMargin="821.0"/>
+					</DiscretizeBin>
+					<DiscretizeBin binValue="4">
+						<Interval closure="closedOpen" leftMargin="821.0"/>
+					</DiscretizeBin>
+				</Discretize>
+			</DerivedField>
+		</LocalTransformations>
+		<RegressionTable intercept="-0.5274654650496393" targetCategory="1">
+			<CategoricalPredictor name="discretize(add_eps(income))" value="0" coefficient="0.5309372481037303"/>
+			<CategoricalPredictor name="discretize(add_eps(income))" value="1" coefficient="-0.012353249745824735"/>
+			<CategoricalPredictor name="discretize(add_eps(income))" value="2" coefficient="-0.21668354823735278"/>
+			<CategoricalPredictor name="discretize(add_eps(income))" value="3" coefficient="-0.4664182933881896"/>
+			<CategoricalPredictor name="discretize(add_eps(income))" value="4" coefficient="-0.3588504277869768"/>
+			<CategoricalPredictor name="discretize(add_eps(Credit_Score))" value="0" coefficient="-0.10100105265775867"/>
+			<CategoricalPredictor name="discretize(add_eps(Credit_Score))" value="1" coefficient="-0.10811994012956738"/>
+			<CategoricalPredictor name="discretize(add_eps(Credit_Score))" value="2" coefficient="-0.135838144057339"/>
+			<CategoricalPredictor name="discretize(add_eps(Credit_Score))" value="3" coefficient="-0.11329026471346829"/>
+			<CategoricalPredictor name="discretize(add_eps(Credit_Score))" value="4" coefficient="-0.06511886949648461"/>
+			<CategoricalPredictor name="occupancy_type" value="pr" coefficient="-0.43941305272872183"/>
+			<CategoricalPredictor name="occupancy_type" value="sr" coefficient="-0.08771280561082194"/>
+		</RegressionTable>
+		<RegressionTable intercept="0.0" targetCategory="0"/>
+		<ModelVerification recordCount="100">
+			<VerificationFields>
+				<VerificationField field="income" column="data:income"/>
+				<VerificationField field="Credit_Score" column="data:Credit_Score"/>
+				<VerificationField field="occupancy_type" column="data:occupancy_type"/>
+				<VerificationField field="probability(0)" column="data:probability_0" precision="1.0E-13" zeroThreshold="1.0E-13"/>
+				<VerificationField field="probability(1)" column="data:probability_1" precision="1.0E-13" zeroThreshold="1.0E-13"/>
+			</VerificationFields>
+			<InlineTable>
+				<row>
+					<data:income>3600.0</data:income>
+					<data:Credit_Score>729</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7530730909903212</data:probability_0>
+					<data:probability_1>0.2469269090096788</data:probability_1>
+				</row>
+				<row>
+					<data:income>3720.0</data:income>
+					<data:Credit_Score>523</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7465380398670849</data:probability_0>
+					<data:probability_1>0.25346196013291505</data:probability_1>
+				</row>
+				<row>
+					<data:income>4080.0</data:income>
+					<data:Credit_Score>584</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>7980.0</data:income>
+					<data:Credit_Score>795</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8244202528213928</data:probability_0>
+					<data:probability_1>0.17557974717860722</data:probability_1>
+				</row>
+				<row>
+					<data:income>6000.0</data:income>
+					<data:Credit_Score>776</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7853047588463378</data:probability_0>
+					<data:probability_1>0.2146952411536623</data:probability_1>
+				</row>
+				<row>
+					<data:income>7500.0</data:income>
+					<data:Credit_Score>688</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:income>8940.0</data:income>
+					<data:Credit_Score>751</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8244202528213928</data:probability_0>
+					<data:probability_1>0.17557974717860722</data:probability_1>
+				</row>
+				<row>
+					<data:income>6000.0</data:income>
+					<data:Credit_Score>865</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7770714412800139</data:probability_0>
+					<data:probability_1>0.2229285587199861</data:probability_1>
+				</row>
+				<row>
+					<data:income>4560.0</data:income>
+					<data:Credit_Score>802</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7488563391573186</data:probability_0>
+					<data:probability_1>0.2511436608426813</data:probability_1>
+				</row>
+				<row>
+					<data:income>6480.0</data:income>
+					<data:Credit_Score>543</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7832255190115407</data:probability_0>
+					<data:probability_1>0.21677448098845936</data:probability_1>
+				</row>
+				<row>
+					<data:income>3780.0</data:income>
+					<data:Credit_Score>879</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>3360.0</data:income>
+					<data:Credit_Score>639</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6327566518794788</data:probability_0>
+					<data:probability_1>0.3672433481205212</data:probability_1>
+				</row>
+				<row>
+					<data:income>4620.0</data:income>
+					<data:Credit_Score>725</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7530730909903212</data:probability_0>
+					<data:probability_1>0.2469269090096788</data:probability_1>
+				</row>
+				<row>
+					<data:income>30000.0</data:income>
+					<data:Credit_Score>808</data:Credit_Score>
+					<data:occupancy_type>ir</data:occupancy_type>
+					<data:probability_0>0.7309811374583364</data:probability_0>
+					<data:probability_1>0.2690188625416636</data:probability_1>
+				</row>
+				<row>
+					<data:income>6480.0</data:income>
+					<data:Credit_Score>826</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7770714412800139</data:probability_0>
+					<data:probability_1>0.2229285587199861</data:probability_1>
+				</row>
+				<row>
+					<data:income>2640.0</data:income>
+					<data:Credit_Score>638</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6327566518794788</data:probability_0>
+					<data:probability_1>0.3672433481205212</data:probability_1>
+				</row>
+				<row>
+					<data:income>9120.0</data:income>
+					<data:Credit_Score>874</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8007275575037398</data:probability_0>
+					<data:probability_1>0.19927244249626014</data:probability_1>
+				</row>
+				<row>
+					<data:income>5700.0</data:income>
+					<data:Credit_Score>633</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7844317500988182</data:probability_0>
+					<data:probability_1>0.21556824990118184</data:probability_1>
+				</row>
+				<row>
+					<data:Credit_Score>763</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8244202528213928</data:probability_0>
+					<data:probability_1>0.17557974717860722</data:probability_1>
+				</row>
+				<row>
+					<data:income>4560.0</data:income>
+					<data:Credit_Score>605</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>11340.0</data:income>
+					<data:Credit_Score>525</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8063913002348095</data:probability_0>
+					<data:probability_1>0.19360869976519052</data:probability_1>
+				</row>
+				<row>
+					<data:Credit_Score>694</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:income>7560.0</data:income>
+					<data:Credit_Score>687</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:income>10020.0</data:income>
+					<data:Credit_Score>579</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8075003084508761</data:probability_0>
+					<data:probability_1>0.192499691549124</data:probability_1>
+				</row>
+				<row>
+					<data:income>5820.0</data:income>
+					<data:Credit_Score>631</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7844317500988182</data:probability_0>
+					<data:probability_1>0.21556824990118184</data:probability_1>
+				</row>
+				<row>
+					<data:income>4200.0</data:income>
+					<data:Credit_Score>891</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>23880.0</data:income>
+					<data:Credit_Score>509</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8063913002348095</data:probability_0>
+					<data:probability_1>0.19360869976519052</data:probability_1>
+				</row>
+				<row>
+					<data:income>10260.0</data:income>
+					<data:Credit_Score>686</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8117722400531472</data:probability_0>
+					<data:probability_1>0.18822775994685279</data:probability_1>
+				</row>
+				<row>
+					<data:income>4500.0</data:income>
+					<data:Credit_Score>717</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7530730909903212</data:probability_0>
+					<data:probability_1>0.2469269090096788</data:probability_1>
+				</row>
+				<row>
+					<data:income>7320.0</data:income>
+					<data:Credit_Score>676</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:income>8400.0</data:income>
+					<data:Credit_Score>721</data:Credit_Score>
+					<data:occupancy_type>ir</data:occupancy_type>
+					<data:probability_0>0.755787573533994</data:probability_0>
+					<data:probability_1>0.24421242646600608</data:probability_1>
+				</row>
+				<row>
+					<data:income>5400.0</data:income>
+					<data:Credit_Score>819</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7853047588463378</data:probability_0>
+					<data:probability_1>0.2146952411536623</data:probability_1>
+				</row>
+				<row>
+					<data:income>4500.0</data:income>
+					<data:Credit_Score>620</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>2040.0</data:income>
+					<data:Credit_Score>579</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6327566518794788</data:probability_0>
+					<data:probability_1>0.3672433481205212</data:probability_1>
+				</row>
+				<row>
+					<data:Credit_Score>570</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8226342729568706</data:probability_0>
+					<data:probability_1>0.17736572704312933</data:probability_1>
+				</row>
+				<row>
+					<data:income>4980.0</data:income>
+					<data:Credit_Score>625</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>3420.0</data:income>
+					<data:Credit_Score>842</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>7440.0</data:income>
+					<data:Credit_Score>607</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8236705847930192</data:probability_0>
+					<data:probability_1>0.1763294152069807</data:probability_1>
+				</row>
+				<row>
+					<data:income>12480.0</data:income>
+					<data:Credit_Score>702</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8117722400531472</data:probability_0>
+					<data:probability_1>0.18822775994685279</data:probability_1>
+				</row>
+				<row>
+					<data:income>8580.0</data:income>
+					<data:Credit_Score>882</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8173380616855904</data:probability_0>
+					<data:probability_1>0.18266193831440955</data:probability_1>
+				</row>
+				<row>
+					<data:income>5040.0</data:income>
+					<data:Credit_Score>518</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7465380398670849</data:probability_0>
+					<data:probability_1>0.25346196013291505</data:probability_1>
+				</row>
+				<row>
+					<data:income>4440.0</data:income>
+					<data:Credit_Score>886</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>16680.0</data:income>
+					<data:Credit_Score>799</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8083027245821122</data:probability_0>
+					<data:probability_1>0.19169727541788786</data:probability_1>
+				</row>
+				<row>
+					<data:income>3360.0</data:income>
+					<data:Credit_Score>865</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6227084354794892</data:probability_0>
+					<data:probability_1>0.3772915645205109</data:probability_1>
+				</row>
+				<row>
+					<data:income>7800.0</data:income>
+					<data:Credit_Score>535</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8226342729568706</data:probability_0>
+					<data:probability_1>0.17736572704312933</data:probability_1>
+				</row>
+				<row>
+					<data:income>10500.0</data:income>
+					<data:Credit_Score>832</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8007275575037398</data:probability_0>
+					<data:probability_1>0.19927244249626014</data:probability_1>
+				</row>
+				<row>
+					<data:income>16680.0</data:income>
+					<data:Credit_Score>719</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8117722400531472</data:probability_0>
+					<data:probability_1>0.18822775994685279</data:probability_1>
+				</row>
+				<row>
+					<data:income>1860.0</data:income>
+					<data:Credit_Score>797</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6339572827442951</data:probability_0>
+					<data:probability_1>0.3660427172557049</data:probability_1>
+				</row>
+				<row>
+					<data:income>4020.0</data:income>
+					<data:Credit_Score>605</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>1200.0</data:income>
+					<data:Credit_Score>654</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6327566518794788</data:probability_0>
+					<data:probability_1>0.3672433481205212</data:probability_1>
+				</row>
+				<row>
+					<data:income>3660.0</data:income>
+					<data:Credit_Score>647</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>4620.0</data:income>
+					<data:Credit_Score>821</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>7680.0</data:income>
+					<data:Credit_Score>719</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:income>6600.0</data:income>
+					<data:Credit_Score>558</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7832255190115407</data:probability_0>
+					<data:probability_1>0.21677448098845936</data:probability_1>
+				</row>
+				<row>
+					<data:income>12060.0</data:income>
+					<data:Credit_Score>864</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8007275575037398</data:probability_0>
+					<data:probability_1>0.19927244249626014</data:probability_1>
+				</row>
+				<row>
+					<data:income>13920.0</data:income>
+					<data:Credit_Score>627</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8075003084508761</data:probability_0>
+					<data:probability_1>0.192499691549124</data:probability_1>
+				</row>
+				<row>
+					<data:income>5880.0</data:income>
+					<data:Credit_Score>654</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7844317500988182</data:probability_0>
+					<data:probability_1>0.21556824990118184</data:probability_1>
+				</row>
+				<row>
+					<data:income>3600.0</data:income>
+					<data:Credit_Score>566</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7465380398670849</data:probability_0>
+					<data:probability_1>0.25346196013291505</data:probability_1>
+				</row>
+				<row>
+					<data:income>8280.0</data:income>
+					<data:Credit_Score>809</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8244202528213928</data:probability_0>
+					<data:probability_1>0.17557974717860722</data:probability_1>
+				</row>
+				<row>
+					<data:income>6540.0</data:income>
+					<data:Credit_Score>865</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7770714412800139</data:probability_0>
+					<data:probability_1>0.2229285587199861</data:probability_1>
+				</row>
+				<row>
+					<data:income>2760.0</data:income>
+					<data:Credit_Score>682</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6391736641160733</data:probability_0>
+					<data:probability_1>0.36082633588392665</data:probability_1>
+				</row>
+				<row>
+					<data:income>3780.0</data:income>
+					<data:Credit_Score>772</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7488563391573186</data:probability_0>
+					<data:probability_1>0.2511436608426813</data:probability_1>
+				</row>
+				<row>
+					<data:income>14520.0</data:income>
+					<data:Credit_Score>503</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8063913002348095</data:probability_0>
+					<data:probability_1>0.19360869976519052</data:probability_1>
+				</row>
+				<row>
+					<data:income>8760.0</data:income>
+					<data:Credit_Score>735</data:Credit_Score>
+					<data:occupancy_type>ir</data:occupancy_type>
+					<data:probability_0>0.755787573533994</data:probability_0>
+					<data:probability_1>0.24421242646600608</data:probability_1>
+				</row>
+				<row>
+					<data:income>6180.0</data:income>
+					<data:Credit_Score>578</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7832255190115407</data:probability_0>
+					<data:probability_1>0.21677448098845936</data:probability_1>
+				</row>
+				<row>
+					<data:income>3780.0</data:income>
+					<data:Credit_Score>680</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7530730909903212</data:probability_0>
+					<data:probability_1>0.2469269090096788</data:probability_1>
+				</row>
+				<row>
+					<data:income>4560.0</data:income>
+					<data:Credit_Score>563</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7465380398670849</data:probability_0>
+					<data:probability_1>0.25346196013291505</data:probability_1>
+				</row>
+				<row>
+					<data:income>5520.0</data:income>
+					<data:Credit_Score>865</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7770714412800139</data:probability_0>
+					<data:probability_1>0.2229285587199861</data:probability_1>
+				</row>
+				<row>
+					<data:income>3900.0</data:income>
+					<data:Credit_Score>838</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>4560.0</data:income>
+					<data:Credit_Score>763</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7488563391573186</data:probability_0>
+					<data:probability_1>0.2511436608426813</data:probability_1>
+				</row>
+				<row>
+					<data:income>3840.0</data:income>
+					<data:Credit_Score>526</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7465380398670849</data:probability_0>
+					<data:probability_1>0.25346196013291505</data:probability_1>
+				</row>
+				<row>
+					<data:income>4500.0</data:income>
+					<data:Credit_Score>679</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7530730909903212</data:probability_0>
+					<data:probability_1>0.2469269090096788</data:probability_1>
+				</row>
+				<row>
+					<data:income>5340.0</data:income>
+					<data:Credit_Score>660</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7890818998002551</data:probability_0>
+					<data:probability_1>0.21091810019974483</data:probability_1>
+				</row>
+				<row>
+					<data:income>2880.0</data:income>
+					<data:Credit_Score>897</data:Credit_Score>
+					<data:occupancy_type>ir</data:occupancy_type>
+					<data:probability_0>0.5154068926038976</data:probability_0>
+					<data:probability_1>0.4845931073961024</data:probability_1>
+				</row>
+				<row>
+					<data:income>5580.0</data:income>
+					<data:Credit_Score>532</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7832255190115407</data:probability_0>
+					<data:probability_1>0.21677448098845936</data:probability_1>
+				</row>
+				<row>
+					<data:income>40500.0</data:income>
+					<data:Credit_Score>656</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8075003084508761</data:probability_0>
+					<data:probability_1>0.192499691549124</data:probability_1>
+				</row>
+				<row>
+					<data:Credit_Score>628</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8236705847930192</data:probability_0>
+					<data:probability_1>0.1763294152069807</data:probability_1>
+				</row>
+				<row>
+					<data:income>3660.0</data:income>
+					<data:Credit_Score>838</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>6420.0</data:income>
+					<data:Credit_Score>813</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7853047588463378</data:probability_0>
+					<data:probability_1>0.2146952411536623</data:probability_1>
+				</row>
+				<row>
+					<data:income>1260.0</data:income>
+					<data:Credit_Score>888</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6227084354794892</data:probability_0>
+					<data:probability_1>0.3772915645205109</data:probability_1>
+				</row>
+				<row>
+					<data:income>6660.0</data:income>
+					<data:Credit_Score>725</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7890818998002551</data:probability_0>
+					<data:probability_1>0.21091810019974483</data:probability_1>
+				</row>
+				<row>
+					<data:income>2400.0</data:income>
+					<data:Credit_Score>559</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.6311008377403031</data:probability_0>
+					<data:probability_1>0.36889916225969693</data:probability_1>
+				</row>
+				<row>
+					<data:income>15120.0</data:income>
+					<data:Credit_Score>567</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8063913002348095</data:probability_0>
+					<data:probability_1>0.19360869976519052</data:probability_1>
+				</row>
+				<row>
+					<data:income>7500.0</data:income>
+					<data:Credit_Score>606</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8236705847930192</data:probability_0>
+					<data:probability_1>0.1763294152069807</data:probability_1>
+				</row>
+				<row>
+					<data:income>6240.0</data:income>
+					<data:Credit_Score>795</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7853047588463378</data:probability_0>
+					<data:probability_1>0.2146952411536623</data:probability_1>
+				</row>
+				<row>
+					<data:income>3720.0</data:income>
+					<data:Credit_Score>548</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7465380398670849</data:probability_0>
+					<data:probability_1>0.25346196013291505</data:probability_1>
+				</row>
+				<row>
+					<data:income>4440.0</data:income>
+					<data:Credit_Score>663</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7530730909903212</data:probability_0>
+					<data:probability_1>0.2469269090096788</data:probability_1>
+				</row>
+				<row>
+					<data:income>10380.0</data:income>
+					<data:Credit_Score>570</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8063913002348095</data:probability_0>
+					<data:probability_1>0.19360869976519052</data:probability_1>
+				</row>
+				<row>
+					<data:income>4320.0</data:income>
+					<data:Credit_Score>877</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7396885916936009</data:probability_0>
+					<data:probability_1>0.26031140830639915</data:probability_1>
+				</row>
+				<row>
+					<data:income>5100.0</data:income>
+					<data:Credit_Score>566</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7832255190115407</data:probability_0>
+					<data:probability_1>0.21677448098845936</data:probability_1>
+				</row>
+				<row>
+					<data:income>9540.0</data:income>
+					<data:Credit_Score>788</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8083027245821122</data:probability_0>
+					<data:probability_1>0.19169727541788786</data:probability_1>
+				</row>
+				<row>
+					<data:income>5160.0</data:income>
+					<data:Credit_Score>816</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7853047588463378</data:probability_0>
+					<data:probability_1>0.2146952411536623</data:probability_1>
+				</row>
+				<row>
+					<data:income>4740.0</data:income>
+					<data:Credit_Score>632</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7478827029338679</data:probability_0>
+					<data:probability_1>0.2521172970661321</data:probability_1>
+				</row>
+				<row>
+					<data:income>8520.0</data:income>
+					<data:Credit_Score>710</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:Credit_Score>700</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.827660254325103</data:probability_0>
+					<data:probability_1>0.172339745674897</data:probability_1>
+				</row>
+				<row>
+					<data:income>15060.0</data:income>
+					<data:Credit_Score>623</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8075003084508761</data:probability_0>
+					<data:probability_1>0.192499691549124</data:probability_1>
+				</row>
+				<row>
+					<data:income>9420.0</data:income>
+					<data:Credit_Score>672</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8117722400531472</data:probability_0>
+					<data:probability_1>0.18822775994685279</data:probability_1>
+				</row>
+				<row>
+					<data:income>3720.0</data:income>
+					<data:Credit_Score>752</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7488563391573186</data:probability_0>
+					<data:probability_1>0.2511436608426813</data:probability_1>
+				</row>
+				<row>
+					<data:income>5520.0</data:income>
+					<data:Credit_Score>801</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.7853047588463378</data:probability_0>
+					<data:probability_1>0.2146952411536623</data:probability_1>
+				</row>
+				<row>
+					<data:income>16740.0</data:income>
+					<data:Credit_Score>834</data:Credit_Score>
+					<data:occupancy_type>pr</data:occupancy_type>
+					<data:probability_0>0.8007275575037398</data:probability_0>
+					<data:probability_1>0.19927244249626014</data:probability_1>
+				</row>
+			</InlineTable>
+		</ModelVerification>
+	</RegressionModel>
+</PMML>
